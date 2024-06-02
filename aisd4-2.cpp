@@ -8,19 +8,20 @@ using namespace std;
 template<typename K, typename T>
 class MyUnorderedMap {
 private:
-    std::vector < std::list < std::pair<K, T>>> table;
+    vector < list < pair<K, T>>> table;
     size_t size;
 
     size_t hashFunc(const K& key) {
-        return std::hash<K>{}(key) % table.size();
+        return hash<K>{}(key) % table.size();
     }
+
 
 public:
     MyUnorderedMap(size_t initialSize) : size(initialSize) {
         table.resize(size);
     }
 
-    MyUnorderedMap(std::initializer_list < std::pair < K, T>> values) {
+    MyUnorderedMap(initializer_list < pair < K, T>> values) {
         size = values.size() * 2; 
         table.resize(size);
         for (const auto& pair : values) {
@@ -85,6 +86,16 @@ public:
         }
         return nullptr;
     }
+    /*
+    int search2(K key) {
+        size_t index = hashFunc(key);
+        for (const auto& pair : table[index]) {
+            if (pair.first == key) {
+                return pair.second;
+            }
+        }
+        return -1; // Вернуть -1, если ключ не найден
+    }*/
 
     bool erase(K key) {
         size_t index = hashFunc(key);
@@ -107,86 +118,67 @@ public:
         }
         return count;
     }
+    
+
 };
-
-class HashMap {
-private:
-    static const int TABLE_SIZE = 10;
-
-    struct Node {
-        std::string key;
-        int value;
-        Node* next;
-        Node(const std::string& key, int value) : key(key), value(value), next(nullptr) {}
-    };
-
-    Node* table[TABLE_SIZE];
-
-    int hashFunction(const std::string& key) {
-        int hash = 0;
-        for (char c : key) {
-            hash += static_cast<int>(c);
-        }
-        return hash % TABLE_SIZE;
-    }
-
-public:
-    HashMap() {
-        for (int i = 0; i < TABLE_SIZE; ++i) {
-            table[i] = nullptr;
-        }
-    }
-
-    void insert(const std::string& key, int value) {
-        int index = hashFunction(key);
-        Node* newNode = new Node(key, value);
-        newNode->next = table[index];
-        table[index] = newNode;
-    }
-
-    int get(const std::string& key) {
-        int index = hashFunction(key);
-        Node* current = table[index];
-        while (current != nullptr) {
-            if (current->key == key) {
-                return current->value;
-            }
-            current = current->next;
-        }
-        return -1;
-    }
-};
-
+/*
 int romanToDecimal(const std::string& roman) {
-    HashMap romanMap;
-    romanMap.insert("I", 1);
-    romanMap.insert("V", 5);
-    romanMap.insert("X", 10);
-    romanMap.insert("L", 50);
-    romanMap.insert("C", 100);
-    romanMap.insert("D", 500);
-    romanMap.insert("M", 1000);
+    MyUnorderedMap<char, int> romanMap(10);
+
+    // Заполнение отображения римских чисел
+    romanMap.insert('I', 1);
+    romanMap.insert('V', 5);
+    romanMap.insert('X', 10);
+    romanMap.insert('L', 50);
+    romanMap.insert('C', 100);
+    romanMap.insert('D', 500);
+    romanMap.insert('M', 1000);
 
     int result = 0;
-    for (size_t i = 0; i < roman.size(); ++i) {
-        int currentValue = romanMap.get(std::string(1, roman[i]));
-        if (i + 1 < roman.size()) {
-            int nextValue = romanMap.get(std::string(1, roman[i + 1]));
-            if (currentValue < nextValue) {
-                result += nextValue - currentValue;
-                ++i;
-            }
-            else {
-                result += currentValue;
-            }
+    int prevValue = 0;
+
+    for (char c : roman) {
+        int curValue = romanMap.search(c);
+        if (curValue > prevValue) {
+            result = result - 2 * prevValue + curValue; // Вычитание дважды предыдущего значения, так как оно уже было добавлено
         }
         else {
-            result += currentValue;
+            result += curValue;
         }
+        prevValue = curValue;
     }
 
     return result;
-}
+}*/
+/*
+int romanToDecimal(const std::string& roman) {
+    MyUnorderedMap<int, std::string> romanMap(10);
+
+    // Заполнение отображения римских чисел
+    romanMap.insert(1, "I");
+    romanMap.insert(5, "V");
+    romanMap.insert(10, "X");
+    romanMap.insert(50, "L");
+    romanMap.insert(100, "C");
+    romanMap.insert(500, "D");
+    romanMap.insert(1000, "M");
+
+    int result = 0;
+    int prevValue = 0;
+
+    for (char c : roman) {
+        int curValue = romanMap.search(c);
+        if (curValue > prevValue) {
+            result = result - 2 * prevValue + curValue; // Вычитание дважды предыдущего значения, так как оно уже было добавлено
+        }
+        else {
+            result += curValue;
+        }
+        prevValue = curValue;
+    }
+
+    return result;
+}*/
 
 
 int main() {
@@ -263,14 +255,27 @@ int main() {
             std::cin >> key6;
             std::cout << "Количество: " << map.count(key6) << std::endl;
             break;
-        case 8:
+        /*case 8:
             std::string romanNumber;
             std::cout << "Введите римское число: ";
             std::cin >> romanNumber;
 
-            int decimalNumber = romanToDecimal(romanNumber);
+            int decimalNumber = map.userInputToArabic(romanNumber);
             std::cout << "Десятичный вид: " << decimalNumber << std::endl;
             break;
+            std::string romanNum;
+
+                std::cout << "Введите римское число: ";
+                std::cin >> romanNum;
+
+                int decimalNum = romanToDecimal(romanNum);
+
+                if (decimalNum != -1) {
+                    std::cout << "Десятичное представление: " << decimalNum << std::endl;
+                } else {
+                    std::cout << "Введено некорректное римское число." << std::endl;
+                }
+                break;*/
 
 
 }
