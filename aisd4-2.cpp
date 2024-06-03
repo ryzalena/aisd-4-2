@@ -43,17 +43,29 @@ public:
 
     void print() {
         for (size_t i = 0; i < size; ++i) {
-            std::cout << i << ": ";
+            cout << i << ": ";
             for (const auto& pair : table[i]) {
-                std::cout << pair.first << " -> " << pair.second << " ";
+                cout << pair.first << " -> " << pair.second << " ";
             }
-            std::cout << std::endl;
+            cout << endl;
         }
     }
 
     void insert(K key, T value) {
         size_t index = hashFunc(key);
-        table[index].push_back(std::make_pair(key, value));
+        bool inserted = false;
+        for (auto& pair : table[index]) {
+            if (pair.first == key) {
+                cout << "Ошибка! Ключ дублируется, вставлять отказываемся." << endl;
+                system("pause");
+                inserted = true;
+                break;
+            }
+        }
+
+        if (!inserted) {
+            table[index].push_back(make_pair(key, value));
+        }
     }
 
     void insert_or_assign(K key, T value) {
@@ -64,7 +76,7 @@ public:
                 return;
             }
         }
-        table[index].push_back(std::make_pair(key, value));
+        table[index].push_back(make_pair(key, value));
     }
 
     bool contains(K key) {
@@ -86,16 +98,6 @@ public:
         }
         return nullptr;
     }
-    /*
-    int search2(K key) {
-        size_t index = hashFunc(key);
-        for (const auto& pair : table[index]) {
-            if (pair.first == key) {
-                return pair.second;
-            }
-        }
-        return -1; // Вернуть -1, если ключ не найден
-    }*/
 
     bool erase(K key) {
         size_t index = hashFunc(key);
@@ -121,11 +123,10 @@ public:
     
 
 };
-/*
+
 int romanToDecimal(const std::string& roman) {
     MyUnorderedMap<char, int> romanMap(10);
 
-    // Заполнение отображения римских чисел
     romanMap.insert('I', 1);
     romanMap.insert('V', 5);
     romanMap.insert('X', 10);
@@ -138,7 +139,7 @@ int romanToDecimal(const std::string& roman) {
     int prevValue = 0;
 
     for (char c : roman) {
-        int curValue = romanMap.search(c);
+        int curValue = *romanMap.search(c);
         if (curValue > prevValue) {
             result = result - 2 * prevValue + curValue; // Вычитание дважды предыдущего значения, так как оно уже было добавлено
         }
@@ -149,42 +150,12 @@ int romanToDecimal(const std::string& roman) {
     }
 
     return result;
-}*/
-/*
-int romanToDecimal(const std::string& roman) {
-    MyUnorderedMap<int, std::string> romanMap(10);
-
-    // Заполнение отображения римских чисел
-    romanMap.insert(1, "I");
-    romanMap.insert(5, "V");
-    romanMap.insert(10, "X");
-    romanMap.insert(50, "L");
-    romanMap.insert(100, "C");
-    romanMap.insert(500, "D");
-    romanMap.insert(1000, "M");
-
-    int result = 0;
-    int prevValue = 0;
-
-    for (char c : roman) {
-        int curValue = romanMap.search(c);
-        if (curValue > prevValue) {
-            result = result - 2 * prevValue + curValue; // Вычитание дважды предыдущего значения, так как оно уже было добавлено
-        }
-        else {
-            result += curValue;
-        }
-        prevValue = curValue;
-    }
-
-    return result;
-}*/
+}
 
 
 int main() {
     setlocale(LC_ALL, "Russian");
-    MyUnorderedMap<int, std::string> map(10);
-    //MyHashMap<int, std::string> map(10);
+    MyUnorderedMap<int, string> map(10);
     int choice;
     do {
         cout << "Выберите действие" << endl;
@@ -198,28 +169,28 @@ int main() {
         cout << "8 - Задание" << endl;
         cout << "0 - Выход" << endl;
         cout << "Операция: ";
-        std::cin >> choice;
+        cin >> choice;
         system("cls");
 
         switch (choice) {
         case 1: {
             int key;
-            std::string value;
-            std::cout << "Введите ключ: ";
-            std::cin >> key;
-            std::cout << "Введите значение: ";
-            std::cin >> value;
+            string value;
+            cout << "Введите ключ: ";
+            cin >> key;
+            cout << "Введите значение: ";
+            cin >> value;
             map.insert(key, value);
             system("cls");
             break; 
         }
         case 2: {
             int key2;
-            std::string value2;
-            std::cout << "Введите ключ: ";
-            std::cin >> key2;
-            std::cout << "Введите значение: ";
-            std::cin >> value2;
+            string value2;
+            cout << "Введите ключ: ";
+            cin >> key2;
+            cout << "Введите значение: ";
+            cin >> value2;
             map.insert_or_assign(key2, value2);
             system("cls");
             break; }
@@ -228,54 +199,47 @@ int main() {
             break;
         case 4:
             int key3;
-            std::cout << "Введите ключ: ";
-            std::cin >> key3;
+            cout << "Введите ключ: ";
+            cin >> key3;
             if (map.contains(key3)) {
-                std::cout << "Элемент существует\n";
+                cout << "Элемент существует\n";
             }
             else {
-                std::cout << "Элемент не существует\n";
+                cout << "Элемент не существует\n";
             }
             break;
         case 5:
             int key4;
-            std::cout << "Введите ключ: ";
-            std::cin >> key4;
-            std::cout << "Значение: " << map.search(key4) << std::endl;
+            cout << "Введите ключ: ";
+            cin >> key4;
+            cout << "Значение: " << map.search(key4) << endl;
             break;
         case 6:
             int key5;
-            std::cout << "Введите ключ: ";
-            std::cin >> key5;
+            cout << "Введите ключ: ";
+            cin >> key5;
             map.erase(key5);
             break;
         case 7:
             int key6;
-            std::cout << "Введите ключ: ";
-            std::cin >> key6;
-            std::cout << "Количество: " << map.count(key6) << std::endl;
+            cout << "Введите ключ: ";
+            cin >> key6;
+            cout << "Количество: " << map.count(key6) << endl;
             break;
-        /*case 8:
-            std::string romanNumber;
-            std::cout << "Введите римское число: ";
-            std::cin >> romanNumber;
+        case 8: 
+            string romanNum;
 
-            int decimalNumber = map.userInputToArabic(romanNumber);
-            std::cout << "Десятичный вид: " << decimalNumber << std::endl;
+            cout << "Введите римское число: ";
+            cin >> romanNum;
+
+            int decimalNum = romanToDecimal(romanNum);
+
+            if (decimalNum != -1) {
+                cout << "Десятичное представление: " << decimalNum << endl;
+            } else {
+                cout << "Введено некорректное римское число." << endl;
+            }
             break;
-            std::string romanNum;
-
-                std::cout << "Введите римское число: ";
-                std::cin >> romanNum;
-
-                int decimalNum = romanToDecimal(romanNum);
-
-                if (decimalNum != -1) {
-                    std::cout << "Десятичное представление: " << decimalNum << std::endl;
-                } else {
-                    std::cout << "Введено некорректное римское число." << std::endl;
-                }
-                break;*/
 
 
 }
